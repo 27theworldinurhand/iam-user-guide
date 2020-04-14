@@ -116,7 +116,7 @@ You can use policy variables in the `Resource` element and in string comparisons
 
 ### Resource Element<a name="policy-vars-resourceelement"></a>
 
-A policy variable can appear as the last part of the [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) that identifies a resource\. The following policy might be attached to a group\. It gives each of the users in the group full programmatic access to a user\-specific object \(their own "home directory"\) in Amazon S3\. 
+A policy variable can appear as the last part of the [ARN](reference_identifiers.md#identifiers-arns) that identifies a resource\. The following policy might be attached to a group\. It gives each of the users in the group full programmatic access to a user\-specific object \(their own "home directory"\) in Amazon S3\. 
 
 ```
 {
@@ -141,7 +141,7 @@ A policy variable can appear as the last part of the [ARN](https://docs.aws.amaz
 ```
 
 **Note**  
-This example uses the `aws:username` key, which returns the user's friendly name \(like "Adele" or "David"\)\. Under some circumstances, you might want to use the `aws:userid` key instead, which is a globally unique value\. For more information, see [Unique IDs](reference_identifiers.md#identifiers-unique-ids)\.
+This example uses the `aws:username` key, which returns the user's friendly name \(like "Adele" or "David"\)\. Under some circumstances, you might want to use the `aws:userid` key instead, which is a globally unique value\. For more information, see [Unique Identifiers](reference_identifiers.md#identifiers-unique-ids)\.
 
 The following policy might be used for an IAM group\. It gives users in that group the ability to create, use, and delete queues that have their names and that are in the us\-east\-2 Region\.
 

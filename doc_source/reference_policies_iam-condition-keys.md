@@ -14,6 +14,30 @@ This topic describes the keys defined and provided by the IAM service \(with an 
 
 You can use the following condition keys in policies that control access to IAM resources: 
 
+**iam:AssociatedResourceArn**  
+Works with [ARN operators](reference_policies_elements_condition_operators.md#Conditions_ARN)\.  
+Specifies the ARN of the resource to which this role will be associated at the destination service\. The resource usually belongs to the service to which the principal is passing the role\. Sometimes, the resource might belong to a third service\. For example, you might pass a role to Amazon EC2 Auto Scaling that they use on an Amazon EC2 instance\. In this case, the condition would match the ARN of the Amazon EC2 instance\.   
+This condition key applies to only the [PassRole](id_roles_use_passrole.md) action in a policy\. It can't be used to limit any other action\.   
+Use this condition key in a policy to allow an entity to pass a role, but only if that role is associated with the specified resource\. You can use wildcards \(\*\) to allow operations performed on a specific type of resource without restricting the region or resource ID\. For example, you can allow an IAM user or role to pass any role to the Amazon EC2 service to be used with instances in the region "us\-east\-1" or "us\-west\-1"\. The IAM user or role would not be allowed to pass roles to other services, and it doesn't allow Amazon EC2 to use the role with instances in other Regions\.   
+
+```
+{
+    "Effect": "Allow",
+    "Action": "iam:PassRole",
+    "Resource": "*",
+    "Condition": {
+        "StringEquals": {"iam:PassedToService": "ec2.amazonaws.com"},
+        "StringLike": {
+            "iam:AssociatedResourceARN": [
+                "arn:aws:ec2:us-east-1:111122223333:instance/*",
+                "arn:aws:ec2:us-west-1:111122223333:instance/*"
+            ]
+        }
+    }
+}
+```
+AWS services that support [iam:PassedToService](#ck_PassedToService) also support this condition key\.
+
 **iam:AWSServiceName**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  
 Specifies the AWS service to which this role is attached\.
@@ -24,7 +48,8 @@ Checks that the policy with the specified AWS Organizations ID matches the polic
 
 **iam:PassedToService**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  
-Specifies the service principal of the service to which a role can be passed\. A service principal is the name of a service that can be specified in the `Principal` element of a policy\. This is the usual format: `SERVICE_NAME_URL.amazonaws.com`\. In the `iam:PassedToService` condition key, provide the service principal of the service that will assume the role\.   
+Specifies the service principal of the service to which a role can be passed\. This condition key applies to only the [PassRole](id_roles_use_passrole.md) action in a policy\. It can't be used to limit any other action\.   
+When you use this condition key in a policy, specify the service using a service principal\. A service principal is the name of a service that can be specified in the `Principal` element of a policy\. This is the usual format: `SERVICE_NAME_URL.amazonaws.com`\.   
 You can use `iam:PassedToService` to restrict your users so that they can pass roles only to specific services\. For example, a user might create a [service role](id_roles_terms-and-concepts.md#iam-term-service-role) that trusts CloudWatch to write log data to an Amazon S3 bucket on their behalf\. Then the user must attach a permissions policy and a trust policy to the new service role\. In this case, the trust policy must specify `cloudwatch.amazonaws.com` in the `Principal` element\. To view a policy that allows the user to pass the role to CloudWatch, see [IAM: Pass an IAM Role to a Specific AWS Service](reference_policies_examples_iam-passrole-service.md)\.  
 By using this condition key, you can ensure that users create service roles only for the services that you specify\. For example, if a user with the preceding policy attempts to create a service role for Amazon EC2, the operation will fail\. The failure occurs because the user does not have permission to pass the role to Amazon EC2\.   
 Some services, such as AWS CodeBuild and AWS CodeCommit do not support this condition key\.
@@ -42,7 +67,7 @@ Works with [string operators](reference_policies_elements_condition_operators.md
 Checks that the tag attached to the identity resource \(user or role\) matches the specified key name and value\.  
 IAM does not support using the `[aws:ResourceTag](reference_policies_condition-keys.md#condition-keys-resourcetag)` global condition key\. AWS STS supports both the IAM key and the global key\.
 You can add custom attributes to a user or role in the form of a key\-value pair\. For more information about IAM tags, see [Tagging IAM Users and Roles](id_tags.md)\. You can use `iam:ResourceTag` to [control access](access_iam-tags.md#access_iam-tags_control-resources) to IAM users and roles\. However, because IAM does not support tags for groups, you cannot use tags to control access to groups\.  
-This example shows how you might create a policy that allows deleting users with the **status=terminated** tag\. To use this policy, replace the red italicized text in the example policy with your own information\.  
+This example shows how you might create a policy that allows deleting users with the **status=terminated** tag\. To use this policy, replace the *italicized placeholder text* in the example policy with your own information\.  
 
 ```
 {
@@ -95,10 +120,59 @@ As an example, the following condition in the trust policy for an Amazon Cognito
 
 **aud**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  
-**Examples**:   
+Use the `aud` condition key to verify that the Google client ID or Amazon Cognito identity pool ID matches the one that you specify in the policy\. You can use the `aud` key with the `sub` key for the same identity provider\.  
+**Examples**:  
 + `accounts.google.com:aud`
 + `cognito-identity.amazonaws.com:aud`
-Use these keys to verify that the Google application ID or Amazon Cognito identity pool ID matches the one that you specify in the policy\. You can use the `aud` key with the `sub` key for the same identity provider\.
+The `accounts.google.com:aud` condition key matches the following Google ID Token fields\.   
++ `aud` for OAuth 2\.0 Google client IDs of your application, when the `azp` field is not set\. When the `azp` field is set, the `aud` field matches the [ `accounts.google.com:oaud`](#ck_oaud) condition key\.
++ `azp` when the `azp` field is set\. This can happen for hybrid apps where a web application and Android app have a different OAuth 2\.0 Google client ID but share the same Google APIs project\. 
+For more information about Google `aud` and `azp` fields, see the [Google Identity Platform OpenID Connect](https://developers.google.com/identity/protocols/OpenIDConnect) Guide\.  
+When you write a policy using the `accounts.google.com:aud` condition key, you must know whether the app is a hybrid app that sets the `azp` field\.   
+**`azp` Field Not Set**  
+The following example policy works for non\-hybrid apps that do not set the `azp` field\. In this case the Google ID Token `aud` field value matches both the `accounts.google.com:aud` and the `accounts.google.com:oaud` condition key values\.  
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {"Federated": "accounts.google.com"},
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "accounts.google.com:aud": "aud-value",
+                    "accounts.google.com:oaud": "aud-value",
+                    "accounts.google.com:sub": "sub-value"
+                }
+            }
+        }
+    ]
+}
+```
+**`azp` Field Set**  
+The following example policy works for hybrid apps that do set the `azp` field\. In this case the Google ID Token `aud` field value matches only the `accounts.google.com:oaud` condition key value\. The `azp` field value matches the `accounts.google.com:aud` condition key value\.  
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {"Federated": "accounts.google.com"},
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "accounts.google.com:aud": "azp-value",
+                    "accounts.google.com:oaud": "aud-value",
+                    "accounts.google.com:sub": "sub-value"
+                }
+            }
+        }
+    ]
+}
+```
 
 **id**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  
@@ -112,9 +186,7 @@ Use these keys to verify that the application \(or site\) ID or user ID matches 
 **oaud**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  
 **Example**: `accounts.google.com:oaud`  
-If you use Google for web identity federation, this key specifies the Google audience for the account\. Use the key if the `app_id` value is scoped to a particular device or client, but you want to authorize against the service ID or project ID\. This key is multivalued, meaning that you test it in a policy using [condition set operators](reference_policies_multi-value-conditions.md)\. The key can contain the following values:   
-+ If the user is unauthenticated, the key contains only `unauthenticated`\.
-+ If the user is authenticated, the key contains the value `authenticated` and the name of the web identity provider that was used in the call\. 
+If you use Google for web identity federation, this key specifies the Google audience \(`aud`\) that this ID token is intended for\. It must be one of the OAuth 2\.0 client IDs of your application\.
 
 **sub**  
 Works with [string operators](reference_policies_elements_condition_operators.md#Conditions_String)\.  

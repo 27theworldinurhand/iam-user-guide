@@ -49,16 +49,17 @@ In this tutorial, you will tag each resource, tag your project roles, and add po
 
 To perform the steps in this tutorial, you must already have the following:
 + An AWS account that you can sign in to as an IAM user with administrative permissions\. If you have a new account and sign in as the AWS account root user, then [create an IAM admin user](getting-started_create-admin-group.md)\.
-+ Your 12\-digit account ID, which you use to create the roles in step 3\. 
++ Your 12\-digit account ID, which you use to create the roles in step 3\.
 
-  To find your account ID, open the IAM console at [https://console\.aws\.amazon\.com/iam/](https://console.aws.amazon.com/iam/)\. At the top of the left navigation pane, view your 12\-digit account ID\.
+  To find your AWS account ID number on the AWS Management Console, choose **Support** on the navigation bar on the upper right, and then choose **Support Center**\. Your currently signed\-in account number \(ID\) appears in the **Support Center** title bar\.  
+![\[Image NOT FOUND\]](http://docs.aws.amazon.com/IAM/latest/UserGuide/images/account-id-support-center.console.png)
 + Experience creating and editing IAM users, roles, and policies in the AWS Management Console\. However, if you need help remembering an IAM management process, this tutorial provides links where you can view step\-by\-step instructions\.
 
 ## Step 1: Create Test Users<a name="tutorial_abac_step1"></a>
 
-For testing, create four IAM users with permissions to assume roles with the same tags\. This makes it easier to add more users to your teams\. When you tag the users, they automatically get access to assume the correct role\. You don’t have to add the users to the trust policy of the role if they work on only one project and team\.
+For testing, create four IAM users with permissions to assume roles with the same tags\. This makes it easier to add more users to your teams\. When you tag the users, they automatically get access to assume the correct role\. You don't have to add the users to the trust policy of the role if they work on only one project and team\.
 
-1. Create the following customer managed policy named `access-assume-role`\. For more information about creating a JSON policy, see [Creating IAM Policies \(Console\)](access_policies_create.md#access_policies_create-start)\.
+1. Create the following customer managed policy named `access-assume-role`\. For more information about creating a JSON policy, see [Creating IAM Policies \(Console\)](access_policies_create-console.md#access_policies_create-start)\.
 
 **ABAC Policy: Assume Any ABAC Role, But Only When the User and Role Tags Match**  
 The following policy allows a user to assume any role in your account with the `access-` name prefix\. The role must also be tagged with the same project, team, and cost center tags as the user\.
@@ -92,7 +93,7 @@ The following policy allows a user to assume any role in your account with the `
 
 ## Step 2: Create the ABAC Policy<a name="tutorial_abac_step2"></a>
 
-Create the following policy named **access\-same\-project\-team**\. You will add this policy to the roles in a later step\. For more information about creating a JSON policy, see [Creating IAM Policies \(Console\)](access_policies_create.md#access_policies_create-start)\.
+Create the following policy named **access\-same\-project\-team**\. You will add this policy to the roles in a later step\. For more information about creating a JSON policy, see [Creating IAM Policies \(Console\)](access_policies_create-console.md#access_policies_create-start)\.
 
 For additional policies that you can adapt for this tutorial, see the following pages:
 + [Controlling Access for IAM Principals](access_iam-tags.md#access_iam-tags_control-principals)
@@ -182,8 +183,8 @@ The following policy allows principals to create, read, edit, and delete resourc
 
 **What does this policy do?**
 + The `AllActionsSecretsManagerSameProjectSameTeam` statement allows all of this service's actions on all related resources, but only if the resource tags match the principal tags\. By adding `"Action": "secretsmanager:*"` to the policy, the policy grows as Secrets Manager grows\. If Secrets Manager adds a new API operation, you are not required to add that action to the statement\. The statement implements ABAC using three condition blocks\. The request is allowed only if all three blocks return true\.
-  + The first condition block of this statement returns true if the specified tag keys are present on the resource, and their values match the principal's tags\. This block returns false for mismatched tags, or for actions that don't support resource tagging\. To learn which actions are not allowed by this block, see [Actions, Resources, and Condition Keys for AWS Secrets Manager](list_awssecretsmanager.md)\. That page shows that actions performed on the [**Secret** resource type](list_awssecretsmanager.md#awssecretsmanager-resources-for-iam-policies) support the `secretsmanager:ResourceTag/tag-key` condition key\. The only two [Secrets Manager actions](list_awssecretsmanager.md#awssecretsmanager-actions-as-permissions) that do not support that resource type are `GetRandomPassword` and `ListSecrets`\. You must create additional statements to allow those actions\.
-  + The second condition block returns true if every tag key passed in the request is included in the specified list\. This is done using `ForAllValues` with the `StringEquals` condition operator\. If no keys are passed, such as for a `Get*` operation, then the condition returns true\. If the requester includes a tag key that is not in the list, the condition returns false\. Every tag key that is passed in the request must match a member of this list\. For more information, see [Using Multiple Keys and Values](reference_policies_multi-value-conditions.md#reference_policies_multi-key-or-value-conditions)\.
+  + The first condition block of this statement returns true if the specified tag keys are present on the resource, and their values match the principal's tags\. This block returns false for mismatched tags, or for actions that don't support resource tagging\. To learn which actions are not allowed by this block, see [Actions, Resources, and Condition Keys for AWS Secrets Manager](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awssecretsmanager.html)\. That page shows that actions performed on the [**Secret** resource type](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awssecretsmanager.html#awssecretsmanager-resources-for-iam-policies) support the `secretsmanager:ResourceTag/tag-key` condition key\. Some [Secrets Manager actions](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awssecretsmanager.html#awssecretsmanager-actions-as-permissions) don't support that resource type, including `GetRandomPassword` and `ListSecrets`\. You must create additional statements to allow those actions\.
+  + The second condition block returns true if every tag key passed in the request is included in the specified list\. This is done using `ForAllValues` with the `StringEquals` condition operator\. If no keys or a subset of the set of keys are passed, then the condition returns true\. This allows `Get*` operations that do not allow passing tags in the request\. If the requester includes a tag key that is not in the list, the condition returns false\. Every tag key that is passed in the request must match a member of this list\. For more information, see [Using Multiple Keys and Values](reference_policies_multi-value-conditions.md#reference_policies_multi-key-or-value-conditions)\.
   + The third condition block returns true if the request supports passing tags, if all three of the tags are present, and if they match the principal tag values\. This block also returns true if the request does not support passing tags\. This is thanks to [`...IfExists`](reference_policies_elements_condition_operators.md#Conditions_IfExists) in the condition operator\. The block returns false if there is no tag passed during an action that supports it, or if the tag keys and values don't match\.
 + The `AllResourcesSecretsManagerNoTags` statement allows the `GetRandomPassword` and `ListSecrets` actions that are not allowed by the first statement\.
 + The `ReadSecretsManagerSameTeam` statement allows read\-only operations if the principal is tagged with the same access\-team tag as the resource\. This is allowed regardless of the project or cost\-center tag\. 
@@ -297,7 +298,7 @@ An important reason for using attribute\-based access control \(ABAC\) over role
 1. Add the following inline policy named `access-assume-specific-roles`\. For more information about adding an inline policy to a user, see [To embed an inline policy for a user or role \(console\)](access_policies_manage-attach-detach.md#embed-inline-policy-console)\.
 
 **ABAC Policy: Assume Only Specific Roles**  
-This policy allows Saanvi to assume the engineering roles for the Pegasus or **Centaur** projects\. It is necessary to create this custom policy because IAM does not support multivalued tags\. You can't tag Saanvi's user with `access-project` = `peg` and `access-project` = `cen`\. Additionally, the AWS authorization model can’t match both values\. For more information, see [Rules for Tagging in IAM And AWS STS](id_tags.md#id_tags_rules)\. Instead, you must manually specify the two roles that she can assume\.
+This policy allows Saanvi to assume the engineering roles for the Pegasus or **Centaur** projects\. It is necessary to create this custom policy because IAM does not support multivalued tags\. You can't tag Saanvi's user with `access-project` = `peg` and `access-project` = `cen`\. Additionally, the AWS authorization model can't match both values\. For more information, see [Rules for Tagging in IAM And AWS STS](id_tags.md#id_tags_rules)\. Instead, you must manually specify the two roles that she can assume\.
 
    ```
    {
@@ -346,7 +347,10 @@ The `access-same-project-team` policy that is attached to the roles allows the e
 
 ## Summary<a name="tutorial-abac-summary"></a>
 
-You’ve now successfully completed all of the steps necessary to use tags for attribute\-based access control \(ABAC\)\. You've learned how to define a tagging strategy\. You applied that strategy to your principals and resources\. You created and applied a policy that enforces the strategy for Secrets Manager\. You also learned that ABAC scales easily when you add new projects and team members\. As a result, you are able to sign in to the IAM console with your test roles and experience how to use tags for ABAC in AWS\.
+You've now successfully completed all of the steps necessary to use tags for attribute\-based access control \(ABAC\)\. You've learned how to define a tagging strategy\. You applied that strategy to your principals and resources\. You created and applied a policy that enforces the strategy for Secrets Manager\. You also learned that ABAC scales easily when you add new projects and team members\. As a result, you are able to sign in to the IAM console with your test roles and experience how to use tags for ABAC in AWS\.
+
+**Note**  
+You added policies that allow actions only under specific conditions\. If you apply a different policy to your users or roles that has broader permissions, then the actions might not be limited to require tagging\. For example, if you give a user full administrative permissions using the `AdministratorAccess` AWS managed policy, then these policies don't restrict that access\. For more information about how permissions are determined when multiple policies are involved, see [Determining Whether a Request Is Allowed or Denied Within an Account](reference_policies_evaluation-logic.md#policy-eval-denyallow)\.
 
 ## Related Resources<a name="tutorial_abac_related"></a>
 

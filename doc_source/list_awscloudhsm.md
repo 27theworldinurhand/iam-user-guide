@@ -9,55 +9,44 @@ References:
 
 **Topics**
 + [Actions Defined by AWS CloudHSM](#awscloudhsm-actions-as-permissions)
-+ [Resources Defined by AWS CloudHSM](#awscloudhsm-resources-for-iam-policies)
++ [Resource Types Defined by AWS CloudHSM](#awscloudhsm-resources-for-iam-policies)
 + [Condition Keys for AWS CloudHSM](#awscloudhsm-policy-keys)
 
 ## Actions Defined by AWS CloudHSM<a name="awscloudhsm-actions-as-permissions"></a>
 
 You can specify the following actions in the `Action` element of an IAM policy statement\. Use policies to grant permissions to perform an operation in AWS\. When you use an action in a policy, you usually allow or deny access to the API operation or CLI command with the same name\. However, in some cases, a single action controls access to more than one operation\. Alternatively, some operations require several different actions\.
 
-The **Resource** column indicates whether each action supports resource\-level permissions\. If there is no value for this column, you must specify all resources \("\*"\) in the `Resource` element of your policy statement\. If the column includes a resource type, then you can specify an ARN of that type in a statement with that action\. Required resources are indicated in the table with an asterisk \(\*\)\. If you specify a resource\-level permission ARN in a statement using this action, then it must be of this type\. Some actions support multiple resource types\. If the resource type is optional \(not indicated as required\), then you can choose to use one but not the other\.
+The **Resource Types** column indicates whether each action supports resource\-level permissions\. If there is no value for this column, you must specify all resources \("\*"\) in the `Resource` element of your policy statement\. If the column includes a resource type, then you can specify an ARN of that type in a statement with that action\. Required resources are indicated in the table with an asterisk \(\*\)\. If you specify a resource\-level permission ARN in a statement using this action, then it must be of this type\. Some actions support multiple resource types\. If the resource type is optional \(not indicated as required\), then you can choose to use one but not the other\.
 
 For details about the columns in the following table, see [The Actions Table](reference_policies_actions-resources-contextkeys.md#actions_table)\.
 
 
 ****  
+[\[See the AWS documentation website for more details\]](http://docs.aws.amazon.com/IAM/latest/UserGuide/list_awscloudhsm.html)
 
-| Actions | Description | Access Level | Resource Types \(\*required\) | Condition Keys | Dependent Actions | 
-| --- | --- | --- | --- | --- | --- | 
-|   [ AddTagsToResource ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_AddTagsToResource.html)  | Adds or overwrites one or more tags for the specified AWS CloudHSM resource | Tagging |  |  |  | 
-|   [ CreateCluster ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_CreateCluster.html)  | Creates a new AWS CloudHSM cluster | Write |  |  |  | 
-|   [ CreateHapg ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_CreateHapg.html)  | Creates a high\-availability partition group | Write |  |  |  | 
-|   [ CreateHsm ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_CreateHsm.html)  | Creates a new hardware security module \(HSM\) in the specified AWS CloudHSM cluster\. | Write |  |  |  | 
-|   [ CreateLunaClient ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_CreateLunaClient.html)  | Creates an HSM client | Write |  |  |  | 
-|   [ DeleteCluster ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DeleteCluster.html)  | Deletes the specified AWS CloudHSM cluster\. | Write |  |  |  | 
-|   [ DeleteHapg ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_DeleteHapg.html)  | Deletes a high\-availability partition group | Write |  |  |  | 
-|   [ DeleteHsm ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DeleteHsm.html)  | Deletes the specified HSM\. | Write |  |  |  | 
-|   [ DeleteLunaClient ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_DeleteLunaClient.html)  | Deletes a client | Write |  |  |  | 
-|   [ DescribeBackups ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DescribeBackups.html)  | Gets information about backups of AWS CloudHSM clusters\. | Read |  |  |  | 
-|   [ DescribeClusters ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_DescribeClusters.html)  | Gets information about AWS CloudHSM clusters\. | Read |  |  |  | 
-|   [ DescribeHapg ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_DescribeHapg.html)  | Retrieves information about a high\-availability partition group | Read |  |  |  | 
-|   [ DescribeHsm ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_DescribeHsm.html)  | Retrieves information about an HSM\. You can identify the HSM by its ARN or its serial number | Read |  |  |  | 
-|   [ DescribeLunaClient ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_DescribeLunaClient.html)  | Retrieves information about an HSM client | Read |  |  |  | 
-|   [ GetConfig ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_GetConfig.html)  | Gets the configuration files necessary to connect to all high availability partition groups the client is associated with | Read |  |  |  | 
-|   [ InitializeCluster ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_InitializeCluster.html)  | Claims an AWS CloudHSM cluster\. | Write |  |  |  | 
-|   [ ListAvailableZones ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ListAvailableZones.html)  | Lists the Availability Zones that have available AWS CloudHSM capacity | List |  |  |  | 
-|   [ ListHapgs ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ListHapgs.html)  | Lists the high\-availability partition groups for the account | List |  |  |  | 
-|   [ ListHsms ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ListHsms.html)  | Retrieves the identifiers of all of the HSMs provisioned for the current customer | List |  |  |  | 
-|   [ ListLunaClients ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ListLunaClients.html)  | Lists all of the clients | List |  |  |  | 
-|   [ ListTags ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_ListTags.html)  | Gets a list of tags for the specified AWS CloudHSM cluster\. | Read |  |  |  | 
-|   [ ListTagsForResource ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ListTagsForResource.html)  | Returns a list of all tags for the specified AWS CloudHSM resource | Read |  |  |  | 
-|   [ ModifyHapg ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ModifyHapg.html)  | Modifies an existing high\-availability partition group | Write |  |  |  | 
-|   [ ModifyHsm ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ModifyHsm.html)  | Modifies an HSM | Write |  |  |  | 
-|   [ ModifyLunaClient ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_ModifyLunaClient.html)  | Modifies the certificate used by the client | Write |  |  |  | 
-|   [ RemoveTagsFromResource ](https://docs.aws.amazon.com/cloudhsm/classic/APIReference/API_RemoveTagsFromResource.html)  | Removes one or more tags from the specified AWS CloudHSM resource | Tagging |  |  |  | 
-|   [ TagResource ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_TagResource.html)  | Adds or overwrites one or more tags for the specified AWS CloudHSM cluster\. | Tagging |  |  |  | 
-|   [ UntagResource ](https://docs.aws.amazon.com/cloudhsm/latest/APIReference/API_UntagResource.html)  | Removes the specified tag or tags from the specified AWS CloudHSM cluster\. | Tagging |  |  |  | 
+## Resource Types Defined by AWS CloudHSM<a name="awscloudhsm-resources-for-iam-policies"></a>
 
-## Resources Defined by AWS CloudHSM<a name="awscloudhsm-resources-for-iam-policies"></a>
+The following resource types are defined by this service and can be used in the `Resource` element of IAM permission policy statements\. Each action in the [Actions table](#awscloudhsm-actions-as-permissions) identifies the resource types that can be specified with that action\. A resource type can also define which condition keys you can include in a policy\. These keys are displayed in the last column of the table\. For details about the columns in the following table, see [The Resource Types Table](reference_policies_actions-resources-contextkeys.md#resources_table)\.
 
-AWS CloudHSM does not support specifying a resource ARN in the `Resource` element of an IAM policy statement\. To allow access to AWS CloudHSM, specify `“Resource”: “*”` in your policy\.
+
+****  
+
+| Resource Types | ARN | Condition Keys | 
+| --- | --- | --- | 
+|   [ backup ](https://docs.aws.amazon.com/cloudhsm/latest/userguide/backups.html)  |  arn:$\{Partition\}:cloudhsm:$\{Region\}:$\{Account\}:backup/$\{CloudHsmBackupInstanceName\}  |   [ aws:ResourceTag/$\{TagKey\} ](#awscloudhsm-aws_ResourceTag___TagKey_)   | 
+|   [ cluster ](https://docs.aws.amazon.com/cloudhsm/latest/userguide/clusters.html)  |  arn:$\{Partition\}:cloudhsm:$\{Region\}:$\{Account\}:cluster/$\{CloudHsmClusterInstanceName\}  |   [ aws:ResourceTag/$\{TagKey\} ](#awscloudhsm-aws_ResourceTag___TagKey_)   | 
 
 ## Condition Keys for AWS CloudHSM<a name="awscloudhsm-policy-keys"></a>
 
-CloudHSM has no service\-specific context keys that can be used in the `Condition` element of policy statements\. For the list of the global context keys that are available to all services, see [Available Keys for Conditions](reference_policies_condition-keys.html#AvailableKeys) in the *IAM Policy Reference*\.
+AWS CloudHSM defines the following condition keys that can be used in the `Condition` element of an IAM policy\. You can use these keys to further refine the conditions under which the policy statement applies\. For details about the columns in the following table, see [The Condition Keys Table](reference_policies_actions-resources-contextkeys.md#context_keys_table)\.
+
+To view the global condition keys that are available to all services, see [Available Global Condition Keys](reference_policies_condition-keys.html#AvailableKeys) in the *IAM Policy Reference*\.
+
+
+****  
+
+| Condition Keys | Description | Type | 
+| --- | --- | --- | 
+|   [ aws:RequestTag/$\{TagKey\} ](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-requesttag)  | Filters actions based on the presence of tag key\-value pairs in the request | String | 
+|   [ aws:ResourceTag/$\{TagKey\} ](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-resourcetag)  | Filters actions based on tag key\-value pairs attached to the resource | String | 
+|   [ aws:TagKeys ](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html#condition-keys-tagkeys)  | Filters actions based on the presence of tag keys in the request | String | 

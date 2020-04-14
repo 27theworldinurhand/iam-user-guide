@@ -4,6 +4,8 @@ Amazon Web Services offers multiple tools for managing the IAM users in your AWS
 
 For more information about adding, changing, or removing managed policies for an IAM user, see [Changing Permissions for an IAM User](id_users_change-permissions.md)\. For information about managing inline policies for IAM users, see [Adding and Removing IAM Identity Permissions](access_policies_manage-attach-detach.md), [Editing IAM Policies](access_policies_manage-edit.md), and [Deleting IAM Policies](access_policies_manage-delete.md)\. As a best practice, use managed policies instead of inline policies\.
 
+ For information about managing IAM user passwords, see [Managing Passwords for IAM Users](id_credentials_passwords_admin-change-user.md),
+
 **Topics**
 + [View User Access](#users-manage_prerequisites)
 + [Listing IAM Users](#id_users_manage_list)
@@ -40,7 +42,7 @@ To change a user's name or path, you must use the AWS CLI, Tools for Windows Pow
 When you change a user's name or path, the following happens: 
 + Any policies attached to the user stay with the user under the new name\.
 + The user stays in the same groups under the new name\.
-+ The unique ID for the user remains the same\. For more information about unique IDs, see [Unique IDs](reference_identifiers.md#identifiers-unique-ids)\.
++ The unique ID for the user remains the same\. For more information about unique IDs, see [Unique Identifiers](reference_identifiers.md#identifiers-unique-ids)\.
 + Any resource or role policies that refer to the user *as a principal* \(the user is being granted access\) are automatically updated to use the new name or path\. For example, any queue\-based policies in Amazon SQS or resource\-based policies in Amazon S3 are automatically updated to use the new name and path\. 
 
 IAM does not automatically update policies that refer to the user *as a resource* to use the new name or path; you must manually do that\. For example, imagine that user `Richard` has a policy attached to him that lets him manage his security credentials\. If an administrator renames `Richard` to `Rich`, the administrator also needs to update that policy to change the resource from this:
